@@ -34,7 +34,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 
 # This will install latest version of GDAL
 RUN apt-get install proj-bin -y
-RUN pip3 install setuptools =60.1.1
+RUN pip3 install setuptools 
 RUN pip3 install numpy ==1.21.0
 RUN pip3 install scipy ==1.7.2
 RUN pip3 install pyproj ==3.1.0
