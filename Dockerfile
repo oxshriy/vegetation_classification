@@ -1,47 +1,56 @@
-# use python2 interpreter here. With some minor changes,
-# we can use python3.
+# 使用Ubuntu 18.04作为基础镜像
 FROM ubuntu:bionic
+
+# 安装Python 3.8
 FROM python:3.8
+
+# 将代码复制到容器中
 COPY . /bin
 
-# import needed python source files
+# 导入需要的Python源文件
 ADD bin/Misc.py /
 ADD bin/ImageClassification.py /
 ADD bin/TrainingImagery.py /
 ADD bin/TrainingPoints.py /
 ADD bin/VegetationClassification.py /
 
-# Update base container install
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y apt-utils
+# 更新基础容器
+RUN apt-get update && apt-get upgrade -y && apt-get install -y apt-utils wget
 
-# Install GDAL dependencies
-RUN apt-get install gdal-bin -y
-RUN apt-get install -y python3-pip libgdal-dev locales
+# 下载并安装指定版本的GDAL
+RUN wget http://archive.ubuntu.com/ubuntu/pool/universe/g/gdal/gdal-bin_2.2.3+dfsg-2_amd64.deb
+RUN apt-get install -y ./gdal-bin_2.2.3+dfsg-2_amd64.deb
 
-# Ensure locales configured correctly
+# 安装GDAL依赖和其他必要的库
+RUN apt-get install -y libgdal-dev locales
+
+# 配置locale
 RUN locale-gen en_US.UTF-8
 ENV LC_ALL='en_US.utf8'
 
-# Set python aliases for python3
-RUN echo 'alias python=python3' >> ~/.bashrc
-RUN echo 'alias pip=pip3' >> ~/.bashrc
+# 设置Python别名，确保文件不存在时创建符号链接
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+RUN ln -sf /usr/bin/pip3 /usr/bin/pip
 
-# Update C env vars so compiler can find gdal
+# 更新编译器的环境变量以找到GDAL
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
-# This will install latest version of GDAL
-RUN apt-get install proj-bin -y
-RUN pip3 install setuptools 
-RUN pip3 install numpy
-RUN pip3 install scipy
-RUN pip3 install pyproj
-RUN pip3 install panda
-RUN pip3 install pyshp
-RUN pip3 install matplotlib
-RUN pip3 install scikit-learn
-RUN pip3 install GDAL
+# 安装其他Python依赖
+RUN pip install setuptools 
+RUN pip install numpy
+RUN pip install scipy
+RUN pip install pyproj
+RUN pip install pandas
+RUN pip install pyshp
+RUN pip install matplotlib
+RUN pip install scikit-learn
+
+# 安装特定版本的GDAL Python包
+RUN pip install GDAL==2.2.3
+
+# 安装python-gdal
 RUN apt-get install -y python-gdal
-ENTRYPOINT [ "python3", "VegetationClassification.py" ]
+
+# 设置容器入口点
+ENTRYPOINT ["python", "VegetationClassification.py"]
