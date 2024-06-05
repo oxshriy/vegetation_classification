@@ -35,13 +35,13 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 # This will install latest version of GDAL
 RUN apt-get install proj-bin -y
 RUN pip3 install setuptools 
-RUN pip3 install numpy ==1.21.0
-RUN pip3 install scipy ==1.7.2
-RUN pip3 install pyproj ==3.1.0
-RUN pip3 install pandas ==1.3.4
+RUN pip3 install numpy
+RUN pip3 install scipy
+RUN pip3 install pyproj
+RUN pip3 install panda
 RUN pip3 install pyshp
-RUN pip3 install matplotlib ==3.4.0
-RUN pip3 install scikit-learn ==0.24.2
-RUN pip3 install GDAL==2.2.3
+RUN pip3 install matplotlib
+RUN pip3 install scikit-learn
+RUN pip3 install GDAL
 RUN apt-get install -y python-gdal
 ENTRYPOINT [ "python3", "VegetationClassification.py" ]
