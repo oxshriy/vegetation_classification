@@ -14,14 +14,16 @@ ADD bin/TrainingImagery.py /
 ADD bin/TrainingPoints.py /
 ADD bin/VegetationClassification.py /
 
-# 更新基础容器
-RUN apt-get update && apt-get upgrade -y && apt-get install -y apt-utils wget
+# 更新基础容器并安装必要的工具和依赖
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y apt-utils wget
 
-# 下载并安装指定版本的GDAL
-RUN wget http://archive.ubuntu.com/ubuntu/pool/universe/g/gdal/gdal-bin_2.2.3+dfsg-2_amd64.deb
-RUN apt-get install -y ./gdal-bin_2.2.3+dfsg-2_amd64.deb
+# 下载并安装指定版本的GDAL二进制包
+RUN wget http://archive.ubuntu.com/ubuntu/pool/universe/g/gdal/gdal-bin_2.2.3+dfsg-2_amd64.deb && \
+    apt-get install -y ./gdal-bin_2.2.3+dfsg-2_amd64.deb
 
-# 安装GDAL依赖和其他必要的库
+# 安装GDAL开发库和其他必要的库
 RUN apt-get install -y libgdal-dev locales
 
 # 配置locale
@@ -37,7 +39,7 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
 # 安装其他Python依赖
-RUN pip install setuptools 
+RUN pip install setuptools
 RUN pip install numpy
 RUN pip install scipy
 RUN pip install pyproj
